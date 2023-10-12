@@ -1,0 +1,81 @@
+name: GitHub Classroom Workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    container: python
+
+    services: 
+       postgres: 
+         image: postgres:latest 
+         env: 
+           POSTGRES_USER: rsoi_persons_6qmq_user
+           POSTGRES_PASSWORD: WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V
+  
+         ports: 
+           - 5432:5432 
+           
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: deps 
+        run: | 
+         pip freeze > requirements.txt
+         pip install -r requirements.txt
+  
+      - name: install psql 
+        run: | 
+         apt update -y 
+         apt install -y postgresql postgresql-contrib 
+  
+      - name: migrate_database 
+        run: | 
+         cd scripts_DataBase
+         psql -h postgres "sslmode=disable user=rsoi_persons_6qmq_user port=5432 password=WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V" < createDatabase.sql 
+         psql -h postgres "sslmode=disable dbname=rsoi_persons_test user=rsoi_persons_6qmq_user port=5432 password=WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V" < createTable.sql 
+         psql -h postgres "sslmode=disable dbname=rsoi_persons_test user=rsoi_persons_6qmq_user port=5432 password=WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V" < fillTable.sql 
+  
+      - name: Unit tests 
+        run: | 
+          cd classes/uniTests
+          pip install requests
+          pip install psycopg2
+          python -m unittest discover
+
+      - name: Deploy
+        env:
+          deploy_url: https://api.render.com/deploy/srv-ckk1t69jrl0c738jisug?key=c7aSfPRoyZc
+        run: |
+          curl "$deploy_url"
+
+      # TODO build, test and deploy project
+
+      - name: Run API Tests
+        uses: matt-ball/newman-action@master
+        with:
+          collection: postman/[inst] Lab1.postman_collection.json
+          environment: postman/[inst][heroku] Lab1.postman_environment.json
+          delayRequest: 100
+          reporters: '[ "cli" ]'
+
+      - name: Autograding
+        uses: education/autograding@v1
+        continue-on-error: true
+
+      #- name: Github auto grader mark
+       # uses: Romanow/google-sheet-autograder-marker@v1.0
+       # with:
+        #  google_token: ${{secrets.GOOGLE_API_KEY}}
+        #  sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
+        #  homework_number: 1
+        #  user_column: 'D'
+        #  column_offset: 'F'
+        #  mark: "'+"
