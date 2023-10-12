@@ -5,9 +5,9 @@ services:
     container_name: postgres
     restart: on-failure
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: postgres
+      POSTGRES_USER: rsoi_persons_6qmq_user
+      POSTGRES_PASSWORD: "WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V"
+      POSTGRES_DB: rsoi_persons_6qmq
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
