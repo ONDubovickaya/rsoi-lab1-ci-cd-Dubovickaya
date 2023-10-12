@@ -52,7 +52,7 @@ jobs:
 
       - name: Deploy
         env:
-          deploy_url: https://api.render.com/deploy/srv-ckk0624l4vmc73bp3khg?key=5sIsP_2h5uQ
+          deploy_url: https://api.render.com/deploy/srv-ckk1t69jrl0c738jisug?key=c7aSfPRoyZc
         run: |
           curl "$deploy_url"
 
