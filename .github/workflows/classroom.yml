@@ -52,7 +52,7 @@ jobs:
 
       - name: Deploy
         env:
-          deploy_url: https://api.render.com/deploy/srv-ckk1t69jrl0c738jisug?key=c7aSfPRoyZc
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl "$deploy_url"
 
@@ -66,9 +66,9 @@ jobs:
           delayRequest: 100
           reporters: '[ "cli" ]'
 
-      - name: Autograding
-        uses: education/autograding@v1
-        continue-on-error: true
+      #- name: Autograding
+      # uses: education/autograding@v1
+      #  continue-on-error: true
 
       #- name: Github auto grader mark
        # uses: Romanow/google-sheet-autograder-marker@v1.0
