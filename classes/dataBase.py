@@ -1,7 +1,6 @@
-import os
 import psycopg2
 
-my_database = os.environ['DB_POSTGRES_URL']
+my_database = 'postgres://rsoi_persons_6qmq_user:WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V@dpg-ckin5qse1qns738opfc0-a.oregon-postgres.render.com/rsoi_persons_6qmq'
 
 class Database:
     def __init__(self):
