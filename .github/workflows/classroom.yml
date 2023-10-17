@@ -1,4 +1,6 @@
+#название рабочего процесса
 name: GitHub Classroom Workflow
+#задание событий, которые будут реагировать на этот рабочий процесс
 on:
   push:
     branches:
@@ -6,12 +8,16 @@ on:
   pull_request:
     branches:
       - master
+#описание задач, которые будут выполнены в рамках рабочего процесса
 jobs:
   build:
     name: Autograding
+    #задание ОС для выполнения задачи
     runs-on: ubuntu-latest
+    #задание контейнера для выполнения задачи
     container: python
 
+    #сервисы, запускаемые вместе с контейнером
     services: 
        postgres: 
          image: postgres:latest 
@@ -22,15 +28,20 @@ jobs:
          ports: 
            - 5432:5432 
            
+    #описание шагов, которые будут выполнены внутри задачи
     steps:
+      #действие action из общедоступного репозитория для клонирования репозитория
       - uses: actions/checkout@v3
+        #аргументы для этого действия
         with:
           fetch-depth: 0
+      #сохранение списка пакетов в файл и их установка
       - name: deps 
         run: | 
          pip freeze > requirements.txt
          pip install -r requirements.txt
   
+      #обновление списка пакетов в ОС + установка postgreSQL 
       - name: install psql 
         run: | 
          apt update -y 
@@ -43,6 +54,7 @@ jobs:
          psql -h postgres "sslmode=disable dbname=rsoi_persons_test user=rsoi_persons_6qmq_user port=5432 password=WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V" < createTable.sql 
          psql -h postgres "sslmode=disable dbname=rsoi_persons_test user=rsoi_persons_6qmq_user port=5432 password=WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V" < fillTable.sql 
   
+      #запуск юнит-тестов
       - name: Unit tests 
         run: | 
           cd classes/uniTests
