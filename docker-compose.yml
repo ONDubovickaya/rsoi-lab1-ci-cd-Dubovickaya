@@ -1,18 +1,27 @@
+#используется версия 3 формата Compose файла
 version: "3"
+#описание сервисов, которые будут разворачиваться и работать в контейнерах
 services:
+  #название сервиса "postgres"
   postgres:
+    #образ контейнера, который используется для разворачивания сервиса "postgres"
     image: library/postgres:13
     container_name: postgres
+    #перезапуск контейнера только в случае сбоя
     restart: on-failure
+    #описание переменных окружения
     environment:
       POSTGRES_USER: rsoi_persons_6qmq_user
       POSTGRES_PASSWORD: "WXXjkvg7vd3q1AE4ycIoTIOS9tlq7s8V"
       POSTGRES_DB: rsoi_persons_6qmq
     volumes:
+    #примонтировать том bd-data к папке внутри контейнера
       - db-data:/var/lib/postgresql/data
+    #примонтировать локальную папку ./postgres к папке внутри контейнера (для инициализации БД при старте контейнера)
       - ./postgres/:/docker-entrypoint-initdb.d/
+    #прокидываем порт контейнера на порт хостовой машины
     ports:
       - "5432:5432"
-
+#описание томов, которые будут использоваться в Compose файле
 volumes:
   db-data:
